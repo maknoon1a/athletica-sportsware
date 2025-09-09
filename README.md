@@ -39,6 +39,7 @@
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Bagan alur kerja request client ke web server dan kaitannya dengan urls.py, views.py, models.py, dan templates (berkas html)
+
 <img width="1494" height="981" alt="image" src="https://github.com/user-attachments/assets/b437cf2e-c5b9-4c72-8786-08de50d63c88" />
 referensi: https://learnbatta.com/blog/understanding-request-response-lifecycle-in-django-29/      
 
@@ -61,5 +62,6 @@ referensi: https://learnbatta.com/blog/understanding-request-response-lifecycle-
 models.py adalah "cetak biru" yang menghubungkan kode Python dengan database, dimana kita mendefinisikan struktur tabel dan kolom-kolomnya. Ketika View memproses request, dia menggunakan ORM untuk mengambil data berdasarkan model ini (misalnya Product.objects.all()), baik secara langsung maupun melalui template tags yang juga merujuk ke models.py. Saat template dirender dan ditampilkan ke user, semua data yang muncul seperti {{ product.name }} sebenarnya tetap berasal dari struktur model yang sudah kita definisikan di models.py. Jadi, mau data diambil lewat View langsung atau melalui template tags, semuanya bergantung pada "aturan main" yang ditetapkan di models.py sebagai fondasi utama struktur data aplikasi kita.
 
 disunting dengan bantuan chatgpt.com
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
