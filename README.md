@@ -43,6 +43,7 @@ Bagan alur kerja request client ke web server dan kaitannya dengan urls.py, view
 <img width="1494" height="981" alt="image" src="https://github.com/user-attachments/assets/b437cf2e-c5b9-4c72-8786-08de50d63c88" />
 referensi: https://learnbatta.com/blog/understanding-request-response-lifecycle-in-django-29/      
 
+
 1. Awal mulanya, pengguna mengetik alamat website, contohnya host/products/ di browser, dan permintaan ini dikirim ke server web (Nginx).
 2. Nginx menerima permintaan dan meneruskannya ke server aplikasi (Gunicorn) yang menjalankan kode Django.
 3. Di Django, permintaan pertama kali diperiksa oleh berbagai komponen keamanan dan utility (Middleware) untuk memastikan segala sesuatunya valid dan aman.
@@ -65,3 +66,10 @@ disunting dengan bantuan chatgpt.com
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+settings.py adalah inti dari konfigurasi Django yang mengatur seluruh aspek aplikasi. File ini berisi pengaturan database (SQLite atau PostgreSQL), daftar aplikasi yang digunakan (INSTALLED_APPS), middleware untuk memproses request/response, lokasi template dan file statis, pengaturan keamanan seperti SECRET_KEY dan ALLOWED_HOSTS, serta konfigurasi bahasa dan zona waktu. Singkatnya, settings.py adalah "remote control" proyek Django dimana developer mengontrol semua perilaku aplikasi dari satu tempat.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Migrasi adalah sistem Django untuk menyinkronkan perubahan model dengan database secara otomatis. Prosesnya dimulai ketika developer membuat atau mengubah model di models.py, lalu menjalankan python manage.py makemigrations agar Django membaca perubahan dan membuat file instruksi migrasi (seperti CREATE TABLE atau ALTER TABLE) di folder migrations. Setelah itu, python manage.py migrate mengeksekusi instruksi tersebut ke database, dan Django mencatat setiap migrasi yang sudah dijalankan di tabel django_migrations. Dengan sistem ini, developer tidak perlu repot menulis SQL manual karena ORM dan migrasi otomatis memastikan struktur database selalu sinkron dengan model Python.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
