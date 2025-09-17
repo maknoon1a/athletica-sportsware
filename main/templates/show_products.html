@@ -128,7 +128,7 @@
         <div>
           <img src="{{ product.thumbnail }}" alt="{{ product.name }}">
           <h2>
-            <a href="{% url 'main:products' product.id %}">{{ product.name }}</a>
+            <a href="{% url 'main:product_detail' product.id %}">{{ product.name }}</a>
           </h2>
           <p class="price">Rp {{ product.price|intcomma }}</p>
           <p class="category">{{ product.get_category_display }} - {{ product.get_product_group_display }}</p>
@@ -148,7 +148,7 @@
             {% endfor %}
           </p>
         </div>
-        <a class="detail-btn" href="{% url 'main:products' product.id %}">Show Detail</a>
+        <a class="detail-btn" href="{% url 'main:product_detail' product.id %}">Show Detail</a>
       </div>
     {% empty %}
       <p>No products available.</p>
