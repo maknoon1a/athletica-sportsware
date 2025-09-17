@@ -32,6 +32,15 @@ class Products(models.Model):
         ('kids', 'Kids'),
     ]
 
+    SPORT_CHOICES = [
+        ('football', 'Football'),
+        ('basketball', 'Basketball'),
+        ('badminton', 'Badminton'),
+        ('volleyball', 'Volleyball'),
+        ('running', 'Running'),
+        ('gym', 'Gym/Fitness'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     price = models.IntegerField()
@@ -39,6 +48,7 @@ class Products(models.Model):
     description = models.TextField()
     thumbnail = models.URLField()
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='jersey')
+    product_group = models.CharField(max_length=20, choices= SPORT_CHOICES, default='running')
     is_featured = models.BooleanField(default=False)
     size = models.CharField(max_length=10, choices=SIZE_CHOICES, default='M')
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='unisex')
