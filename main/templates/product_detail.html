@@ -1,0 +1,163 @@
+{% extends "base_user.html" %}
+{% load humanize %}
+
+<!-- template's style made by ai -->
+{% block style %}
+<style>
+.container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+}
+.breadcrumb {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+.product-detail {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.product-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+}
+.product-info {
+    flex: 1;
+}
+.product-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.product-sold {
+    font-size: 14px;
+    color: gray;
+}
+.product-price {
+    font-size: 28px;
+    color: #007bff;
+    font-weight: bold;
+    margin: 10px 0;
+}
+.color-list, .size-list {
+    display: flex;
+    gap: 10px;
+    margin: 5px 0 15px 0;
+}
+.color-btn, .size-btn {
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background: #f9f9f9;
+    cursor: pointer;
+}
+.color-btn:hover, .size-btn:hover {
+    background: #eee;
+}
+.quantity-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    width: 120px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+.quantity-box button {
+    width: 30px;
+    border: none;
+    background: #f1f1f1;
+    cursor: pointer;
+    font-size: 16px;
+}
+.quantity-box input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    outline: none;
+}
+.add-cart {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.add-cart:hover {
+    background: #0056b3;
+}
+.product-description {
+    margin-top: 30px;
+}
+.product-description h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Div 1: Breadcrumb -->
+    <div class="breadcrumb">
+        {{ product.get_category_display }} / {{ product.get_product_group_display }} / {{ product.get_gender_display }}
+    </div>
+
+    <!-- Div 2: Product Info -->
+    <div class="product-detail">
+        <!-- Left: Product Image -->
+        <div class="product-image">
+            <img src="{{ product.thumbnail }}" alt="{{ product.name }}">
+        </div>
+
+        <!-- Right: Product Info -->
+        <div class="product-info">
+            <h1 class="product-name">{{ product.name }}</h1>
+            <p class="product-sold">Sold: {{ product.sold_count }}</p>
+            <p class="product-price">Rp {{ product.price|intcomma }}</p>
+
+            <!-- Colors -->
+            <div class="product-colors">
+                <p>Warna:</p>
+                <div class="color-list">
+                    {% for color in product.colors.all %}
+                        <button class="color-btn">{{ color.name }}</button>
+                    {% empty %}
+                        <span>Tidak ada warna</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="product-quantity">
+                <p>Kuantitas:</p>
+                <div class="quantity-box">
+                    <button>-</button>
+                    <input type="text" value="1">
+                    <button>+</button>
+                </div>
+            </div>
+
+            <!-- Size -->
+            <div class="product-sizes">
+                <p>Ukuran:</p>
+                <div class="size-list">
+                    <button class="size-btn">{{ product.get_size_display }}</button>
+                </div>
+            </div>
+
+            <button class="add-cart">Tambah ke Keranjang</button>
+        </div>
+    </div>
+
+    <!-- Div 3: Description -->
+    <div class="product-description">
+        <h2>Deskripsi Produk</h2>
+        <p>{{ product.description }}</p>
+    </div>
+</div>
+{% endblock %}

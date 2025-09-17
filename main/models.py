@@ -4,6 +4,10 @@ import uuid
 # Create your models here.
 class Color(models.Model):
     name = models.CharField(max_length=50, unique=True)
+
+    
+    def __str__(self):
+        return self.name
     
 class Products(models.Model):
 

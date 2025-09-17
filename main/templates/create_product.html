@@ -1,0 +1,110 @@
+{% extends 'base_admin.html' %} 
+
+<!-- template's style made by ai -->
+{% block style %}
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h1 {
+        font-family: 'Inter', sans-serif;
+        font-size: 32px;
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        padding-bottom: 10px;
+    }
+
+    form {
+        max-width: 700px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 25px 35px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td {
+        padding: 12px 8px;
+        vertical-align: middle;
+        font-size: 15px;
+        color: #444;  
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="file"]:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        outline: none;
+    }
+
+    /* Tombol formal */
+    .submit-cell {
+        text-align: right;
+    }
+    input[type="submit"] {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.1s ease;
+        text-align: right;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    input[type="submit"]:active {
+        background-color: #004085;
+        transform: translateY(0);
+    }
+  </style>
+{% endblock style %}
+
+{% block content %}
+  <h1>Add Products</h1>
+
+  <form method="POST">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+      <tr>
+        <td></td>
+        <td class="submit-cell">
+          <input type="submit" value="ADD PRODUCT" />
+        </td>
+      </tr>
+    </table>
+  </form>
+{% endblock content %}

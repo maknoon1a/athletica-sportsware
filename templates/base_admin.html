@@ -1,0 +1,61 @@
+<!-- template's style made by ai -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Athletica Sportswear</title>
+        <link href="https://fonts.googleapis.com/css2?family=Anton:wght@400&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            .header {
+                background-color: #ffffff;
+                border-bottom: 1px solid #e5e7eb;
+                padding: 16px 16px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+            .title {
+                font-family: 'Inter', sans-serif;
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #1f2937;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                text-align: center;
+            }
+
+            .footer {
+                background-color: #0a0a0a;
+                padding: 40px 0;
+                border-top: 1px solid #333;
+                margin-top: 100px
+        }   
+        </style>
+
+        {% block style %}
+        {% endblock style %}
+
+    </head>
+    <body>
+        <header class="header">
+            <h1 class="title">ATHLETICA SPORTSWEAR</h1>
+        </header>
+
+        <main class="main-content">
+            {% block content %}
+            {% endblock content %}
+        </main>
+
+        <footer class="footer">
+            
+        </footer>
+
+    </body>
+</html>

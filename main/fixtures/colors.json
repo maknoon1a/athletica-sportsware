@@ -1,0 +1,22 @@
+[
+  {"model": "main.color", "pk": 1, "fields": {"name": "Red"}},
+  {"model": "main.color", "pk": 2, "fields": {"name": "Blue"}},
+  {"model": "main.color", "pk": 3, "fields": {"name": "Green"}},
+  {"model": "main.color", "pk": 4, "fields": {"name": "Black"}},
+  {"model": "main.color", "pk": 5, "fields": {"name": "White"}},
+  {"model": "main.color", "pk": 6, "fields": {"name": "Yellow"}},
+  {"model": "main.color", "pk": 7, "fields": {"name": "Purple"}},
+  {"model": "main.color", "pk": 8, "fields": {"name": "Orange"}},
+  {"model": "main.color", "pk": 9, "fields": {"name": "Pink"}},
+  {"model": "main.color", "pk": 10, "fields": {"name": "Brown"}},
+  {"model": "main.color", "pk": 11, "fields": {"name": "Gray"}},
+  {"model": "main.color", "pk": 12, "fields": {"name": "Cyan"}},
+  {"model": "main.color", "pk": 13, "fields": {"name": "Magenta"}},
+  {"model": "main.color", "pk": 14, "fields": {"name": "Navy"}},
+  {"model": "main.color", "pk": 15, "fields": {"name": "Beige"}},
+  {"model": "main.color", "pk": 16, "fields": {"name": "Maroon"}},
+  {"model": "main.color", "pk": 17, "fields": {"name": "Turquoise"}},
+  {"model": "main.color", "pk": 18, "fields": {"name": "Silver"}},
+  {"model": "main.color", "pk": 19, "fields": {"name": "Gold"}},
+  {"model": "main.color", "pk": 20, "fields": {"name": "Olive"}}
+]
