@@ -27,12 +27,12 @@ def show_xml(request):
 
 def show_json_byID(request, id):
     data = Products.objects.get(pk=id)
-    data_json = serializers.serialize("json", data)
+    data_json = serializers.serialize("json", [data])
     return HttpResponse(data_json, content_type="application/json")
 
 def show_xml_byID(request, id):
     data = Products.objects.get(pk=id)
-    data_xml = serializers.serialize("xml", data)
+    data_xml = serializers.serialize("xml", [data])
     return HttpResponse(data_xml, content_type="application/xml")
 
 

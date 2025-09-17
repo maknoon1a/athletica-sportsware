@@ -77,3 +77,29 @@ Migrasi adalah sistem Django untuk menyinkronkan perubahan model dengan database
 Django sering dijadikan titik awal belajar pengembangan perangkat lunak karena merupakan framework Python high-level yang memungkinkan developer membangun aplikasi web dengan cepat dan aman tanpa harus repot mengurus kerumitan teknis dari awal. Prinsip “Don’t Repeat Yourself” (DRY) yang digunakannya membuat komponen bisa dipakai ulang sehingga proses development jadi lebih efisien. Django juga dikenal sebagai “batteries included framework” karena sudah menyediakan banyak fitur bawaan seperti autentikasi pengguna, koneksi database, operasi CRUD, hingga Django Admin dan SQLite3 sebagai database default. Selain itu, framework ini punya dokumentasi yang sangat lengkap, mampu menangani aplikasi berskala besar, dipakai perusahaan besar seperti Instagram dan YouTube, serta mudah dipelajari bahkan oleh pemula tanpa pengalaman Django sebelumnya. Hal-hal inilah yang menjadikannya pilihan ideal sebagai permulaan belajar web development.
 
 referensi: https://www.geeksforgeeks.org/python/python-web-development-django/      
+
+
+
+TUGAS 3
+
+Data delivery berperan penting dalam implementasi sebuah platform karena menjadi sarana utama untuk pertukaran informasi secara terstruktur dan efisien antara berbagai bagian sistem, misalnya antara frontend dengan backend atau antar layanan dalam arsitektur microservices. Dengan adanya mekanisme ini, data dapat dikirim, diterima, dan diproses secara konsisten, sehingga mempermudah integrasi, menjaga interoperabilitas, serta mendukung pengembangan sistem yang dapat diskalakan. Tanpa adanya data delivery yang baik, komunikasi antar komponen akan terganggu, yang dapat menimbulkan masalah seperti ketidakselarasan data, performa yang melambat, hingga hambatan saat menambahkan fitur baru.
+
+Jika dibandingkan dengan XML, JSON lebih banyak digunakan pada pengembangan aplikasi web modern karena formatnya yang lebih ringkas, mudah dipahami, dan efisien dalam proses parsing maupun pengiriman data. JSON tidak mengandung tag berulang seperti XML sehingga ukuran data menjadi lebih kecil dan waktu transmisi lebih cepat. Selain itu, karena JSON terintegrasi secara native dengan JavaScript, penggunaannya sangat sesuai untuk aplikasi web maupun REST API. Sementara itu, XML dianggap lebih kompleks serta memerlukan sumber daya tambahan dalam pengolahan datanya.
+
+Method is_valid() pada form Django berfungsi untuk melakukan validasi terhadap data yang diinput oleh pengguna sesuai dengan aturan yang telah ditentukan, misalnya validasi tipe data, panjang teks, atau batasan nilai. Adanya proses ini memastikan bahwa hanya data yang benar dan aman yang diteruskan untuk diproses, sehingga mengurangi risiko error input, pelanggaran konsistensi data, maupun celah keamanan. Selain itu, is_valid() juga membantu developer memberikan pesan kesalahan yang jelas kepada pengguna, sehingga pengalaman penggunaan aplikasi menjadi lebih baik.
+
+Penggunaan csrf_token dalam form Django sangat penting untuk melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF). Token ini memastikan bahwa setiap request yang dikirim berasal dari sumber yang sah dan bukan hasil manipulasi pihak luar. Jika csrf_token tidak digunakan, penyerang bisa membuat form palsu untuk melakukan aksi berbahaya atas nama pengguna yang sedang login, misalnya mengubah data atau mengakses fitur sensitif. Dengan adanya token ini, setiap permintaan menjadi unik dan terverifikasi, sehingga resiko eksploitasi keamanan dapat diminimalisir.
+
+Langkah-Langkah secara umum:
+1. Membuat template base untuk di extends
+2. Membuat 4 fungsi
+      - show_json -> menampilkan seluruh product
+      - show_json_byID -> ini untuk menampilkan data 1 product saja
+      - show_xml 
+      - show_xml_byID yang smaa fungsinya
+3. Routing di url, dengan return HttpResponse dan content type nya sesuai dengan jenis data masing-masing
+4. Membuat fungsi show_products yang menampilkan semua product dan terdapat tombol detail
+5. Tombol detail tersebut di route ke products/id pada hrefnya dengan tag url dan parameter product.id
+6. Membuat input dengan django form dengan membuat forms.py
+7. Routing ke url untuk masuk ke halaman form dengan fungsi create_product di views
+

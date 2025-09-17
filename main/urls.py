@@ -10,7 +10,7 @@ urlpatterns = [
     path('main/add-product', add_product, name='add_product'),
     path('main/show-json', show_json, name='show_data_json'),
     path('main/show-xml', show_xml, name='show_data_xml'),
-    path('main/show-json/<str:int>', show_json_byID, name='show_data_json_byID'),
-    path('main/show-xml/<str:int>', show_xml_byID, name='show_data_xml_byID'),
+    path('main/show-json/<str:id>', show_json_byID, name='show_data_json_byID'),
+    path('main/show-xml/<str:id>', show_xml_byID, name='show_data_xml_byID'),
     path('main/show-color', show_color, name='show_color')
 ]
