@@ -103,3 +103,11 @@ Langkah-Langkah secara umum:
 6. Membuat input dengan django form dengan membuat forms.py
 7. Routing ke url untuk masuk ke halaman form dengan fungsi create_product di views
 
+contoh salah satu produk dalam json
+![alt text](image.png)
+contoh semua produk dalam json
+![alt text](image-1.png)
+contoh salah satu produk dalam xml
+![alt text](image-3.png)
+contoh semua produk dalam xml
+![alt text](image-2.png)
