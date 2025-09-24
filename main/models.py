@@ -1,14 +1,13 @@
 from django.db import models
 import uuid
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Color(models.Model):
     name = models.CharField(max_length=50, unique=True)
-
-    
     def __str__(self):
         return self.name
-    
+
 class Products(models.Model):
 
     CATEGORY_CHOICES = [
@@ -46,6 +45,7 @@ class Products(models.Model):
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=255)
     price = models.IntegerField()
     colors = models.ManyToManyField(Color, related_name="products")
@@ -69,3 +69,10 @@ class Products(models.Model):
         self.stock_quantity -= 1
         self.sold_count += 1
         self.save()
+
+
+# class CartItem(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)  
+#     product = models.ForeignKey(Products, on_delete=models.CASCADE)  
+#     quantity = models.PositiveIntegerField(default=1)  
+#     added_at = models.DateTimeField(auto_now_add=True)  

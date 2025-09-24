@@ -79,6 +79,8 @@ Django sering dijadikan titik awal belajar pengembangan perangkat lunak karena m
 referensi: https://www.geeksforgeeks.org/python/python-web-development-django/      
 
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 TUGAS 3
 
@@ -111,3 +113,36 @@ contoh salah satu produk dalam xml
 ![alt text](image-3.png)
 contoh semua produk dalam xml
 ![alt text](image-2.png)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+TUGAS 4
+
+Langkah-langkah pengerjaan:
+
+- Membuat fungsi registrasi pada views.py, mengimportnya di urls.py dan melakukan routing dengan template register.html. registrasi dibuat dengan mengunakan UserCreationForm yang di import dari django.contrib.auth.forms. Fungsi ini pertama akan mendapat request GET saat pertama kali page dibuka. Ketika user mengisi formnya dan menekan submit, request method berubah menjadi POST dan apabila valid akan di save ke database lalu akan redirect ke page login.
+- Membuat fungsi login dan logout pada views.py, melakukan routing di urls.py dengan template login.html. Prosesnya sama seperti saat register. Responsenya ketika forms valid cookies akan dibuat dan store data last_login ke cookie. Redirect ke homepage dengan tampilan navbar yang sudah ditampilkan nama user dan tombol logout
+- Membuat fungsi logout dan routing ke urls.py, lalu membuat tombol pada navbar disamping username saat sudah login dan langsung mengembalikan ke homepage yang tidak ada fitur cart dan my products
+- Meretriksi fitur cart, my products supaya login terlebih dahulu dengan decorator @login_required yang diambil dari django.contrib.auth.decorators
+- Apabila sudah login, fitur my products bisa diakses, lalu saya membuat tombol untuk menambahkan produk yang langsung masuk ke page penambahan produk
+- Menghubungkan User dan Product dengan menambahkan field foreign key di model product. Lalu pada add_product sebelum disave set terlebih dahulu field tersebut dengan user yang sedang login sekarang melalui request (karena request menyimpan objek user yang sedang login) sehingga product yang dibuat pada saat suatu user sedang login belongs to user tersebut.
+
+1. Django AuthenticationForm
+
+Django AuthenticationForm adalah form bawaan django yang diambil dari django.contrib.auth.forms untuk menangani autentikasi user saat akan login. Apabila tidak di setting AUTH_USER_MODEL pada settings.py maka formnya akan otomatis membaca model User bawaan django pada django.contrib.auth.models. Secara default User memiliki 2 field yaitu username dan password sehingga nanti AuthenticationForm akan mencari dan mencocokan apakah input dari form tersebut ada di database model User. Hasil pencocokan tersebut dapat diakses melalui method .is_valid() --> mengembalikan True jika ada. Untuk mendapatkan objek usernya dapat menggunakan method .get_user() pada objek form yang dibuat. Kelebihannya adalah sudah built-in sehingga hanya tinggal menggunakan dan sudah divalidasi secara otomatis. Keamanannya juga sudah terjamin karena django sendiri yang handle. Beberapa kekurangannya:
+
+      - AuthenticationForm hanya mendukung autentikasi standar berbasis username dan password, sehingga kalau aplikasi membutuhkan login dengan email, nomor telepon, atau field custom lain, form ini tidak bisa langsung dipakai tanpa modifikasi.
+
+      - Validasi bawaan AuthenticationForm cukup sederhana, jadi kalau dibutuhkan aturan keamanan tambahan seperti captcha, two-factor authentication, atau rate limiting, developer harus menambahkan logika sendiri.
+
+      - Karena form ini terikat pada sistem autentikasi bawaan Django, pengguna yang memakai custom user model dengan field unik kadang perlu membuat subclass atau form baru agar login berjalan sesuai kebutuhan.
+
+
+2. Kelebihan dan kekurangan session dan cookies dalam menyimpan state di aplikasi web
+
+Cookies lebih ringan karena data disimpan langsung di browser pengguna, cocok untuk menyimpan preferensi sederhana seperti bahasa atau tema, tetapi ukurannya terbatas dan rawan dimanipulasi atau dicuri. Session lebih aman karena data disimpan di server, sementara browser hanya menyimpan session ID, sehingga cocok untuk data sensitif seperti status login atau keranjang belanja. Namun, session menambah beban server dan memerlukan mekanisme pembersihan data lama, serta bisa menimbulkan masalah skala jika pengguna sangat banyak.
+
+3. Keamanan Cookies Default
+
+Cookies tidak sepenuhnya aman secara default karena rentan terhadap pencurian melalui serangan XSS, penyadapan jika tidak menggunakan HTTPS, dan risiko session hijacking. Django mengantisipasi hal ini dengan menyediakan pengaturan keamanan seperti HttpOnly agar cookie tidak bisa diakses JavaScript, Secure agar cookie hanya dikirim lewat HTTPS, serta menandatangani cookie untuk mencegah pemalsuan. Dengan cara ini, Django memastikan penggunaan cookies lebih aman, meskipun developer tetap harus mengaktifkan opsi keamanan sesuai kebutuhan aplikasinya.

@@ -10,11 +10,19 @@
     font-family: 'Inter', sans-serif;
   }
 
+  .product-owner {
+    text-align: center;
+  }
+
   .title {
     text-align: center;
     font-size: 32px;
     font-weight: 600;
     margin-bottom: 30px;
+    display: inline-block;
+    padding: 10px;
+    text-decoration: none;
+
   }
 
   .product-grid {
@@ -120,7 +128,13 @@
 
 {% block content %}
 <div class="product-container">
-  <h1 class="title">All Products</h1>
+  <div class="product-owner">
+    <a class="title" href="?filter=all">All Products</a>
+    {%if request.user.is_authenticated %}
+    <span class="title">|</span>
+    <a class="title" href="?filter=myproduct">My Products</a>
+    {%endif%}
+  </div>
 
   <div class="product-grid">
     {% for product in products %}

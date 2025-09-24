@@ -117,6 +117,7 @@
         <!-- Right: Product Info -->
         <div class="product-info">
             <h1 class="product-name">{{ product.name }}</h1>
+            <h3 class="shop-name">{%if product.user %}{{product.user.username}}{%else%}System{%endif%}</h3>
             <p class="product-sold">Sold: {{ product.sold_count }}</p>
             <p class="product-price">Rp {{ product.price|intcomma }}</p>
 

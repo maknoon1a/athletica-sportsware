@@ -4,9 +4,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Athletica Sportswear</title>
+        {%block meta%}
+            <title>Athletica Sportswear</title>
+        {%endblock meta%}
         <link href="https://fonts.googleapis.com/css2?family=Anton:wght@400&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <style>
             html, body {
                 height: 100%;
@@ -19,7 +22,7 @@
             }
 
             .main-content {
-                flex: 1; /* ini bikin konten ngedorong footer ke bawah */
+                flex: 10; /* ini bikin konten ngedorong footer ke bawah */
             }
 
             * {
@@ -47,7 +50,7 @@
                 text-transform: uppercase;
             }
 
-            .search-section {
+            .navbar {
                 display: flex;
                 align-items: center;
                 gap: 12px;
@@ -56,6 +59,10 @@
                 margin: 0 40px;
             }
 
+            .lastlogin {
+                text-align: right;
+                margin-right: 20px;
+            }
             .search-bar {
                 flex: 1;
                 padding: 12px 16px;
@@ -124,10 +131,45 @@
                 color: white;
                 border: 1px solid #3b82f6;
             }
-
+            
             .btn-register:hover {
                 background: #2563eb;
                 border-color: #2563eb;
+            }
+            
+            .btn-logout {
+                background: #3b82f6;
+                color: white;
+                border: 1px solid #3b82f6;
+            }
+
+            .btn-logput:hover {
+                background: #2563eb;
+                border-color: #2563eb;
+            }
+
+            .btn-cart {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background-color: #3b82f6;
+                color: white;
+                padding: 10px 16px;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+
+            .btn-cart:hover {
+                background-color: #2563eb;
+            }
+
+            .btn-cart svg {
+                width: 20px;
+                height: 20px;
+                fill: white; /* warna ikon */
             }
 
             @media (max-width: 768px) {
@@ -141,7 +183,7 @@
                     font-size: 1.25rem;
                 }
                 
-                .search-section {
+                .navbar {
                     max-width: 100%;
                     margin: 0;
                 }
@@ -174,17 +216,36 @@
             <header class="header">
                 <h1 class="title">ATHLETICA SPORTSWEAR</h1>
                 
-                <div class="search-section">
+                <div class="navbar">
                     <input type="text" class="search-bar" placeholder="Search products...">
                     <button class="filter-btn">Filter</button>
+
+                <a href="{% url 'main:cart' %}">
+                    <button class="btn-cart">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                        <path d="M528.12 301.319l47.273-208C578.03 83.132 565.339 64 546.627 64H120.72L111.17 24.527A24 24 0 0 0 87.667 8H24A24 24 0 0 0 0 32v16c0 13.255 10.745 24 24 24h45.333l77.103 338.225c-19.34 11.202-32.436 31.883-32.436 55.775 0 35.346 28.654 64 64 64s64-28.654 64-64c0-6.768-1.064-13.303-3.014-19.406h198.028c-1.95 6.103-3.014 12.638-3.014 19.406 0 35.346 28.654 64 64 64s64-28.654 64-64c0-23.729-13.056-44.305-32.546-55.482l5.675-25.018a24 24 0 0 0-18.83-29.029z"/>
+                        </svg>
+                    </button>
+                </a>
                 </div>
-                
                 <div class="auth-buttons">
-                    <button class="btn btn-login">Sign In</button>
-                    <button class="btn btn-register">Sign Up</button>
+                    {% if user.is_authenticated %}
+                        <p class='username' >{{ user.username }}</p>
+                        <a href="{% url 'main:add_product' %}"><button class="'btn-add-product">+ Add Product</button></a>
+                        <a href="{% url 'main:logout' %}"><button class="'btn-logout">Logout</button></a>
+                    {% else %}
+                        <a href="{% url 'main:login' %}"><button class="btn btn-login">Sign In</button></a>
+                        <a href="{% url 'main:register' %}"><button class="btn btn-register">Sign Up</button></a>
+                    {% endif %}
                 </div>
             </header>
-    
+
+            {%if user.is_authenticated%}
+                <div class="lastlogin">
+                    <p>Last login: {{last_login}}</p>
+                </div>
+            {%endif%}
+
             <main class="main-content">
                 {% block content %}
     
