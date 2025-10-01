@@ -1,32 +1,33 @@
-{%extends 'registration.html'%}
-
-{% block meta %}
-<title>Registration Page</title>
-{% endblock meta %}
-
+{% extends "base_auth.html" %}
 {% block content %}
+<div class="bg-white shadow-lg rounded-xl p-10 w-full max-w-md mx-auto">
+  <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Create an Account</h2>
 
-<div>
-  <h1>Register</h1>
-
-  <form method="POST">
+  <form method="POST" class="space-y-5">
     {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input type="submit" name="submit" value="Daftar" /></td>
-      </tr>
-    </table>
+    {{ form.non_field_errors }}
+
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.errors %}
+          <p class="text-red-500 text-sm mt-1">{{ field.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit"
+      class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 shadow-md transition">
+      Register
+    </button>
   </form>
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+  <p class="text-center text-sm text-gray-600 mt-6">
+    Already have an account? 
+    <a href="{% url 'main:login' %}" class="text-indigo-600 font-medium hover:underline">Login</a>
+  </p>
 </div>
-
-{% endblock content %}
+{% endblock %}

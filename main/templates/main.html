@@ -1,36 +1,66 @@
 <!DOCTYPE html>
-
 <html>
-    <head>
-        <title>Athletica Sportsware</title>
+<head>
+    <title>Athletica Sportsware</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
 
-        <style>
-            .biodata {
-                width: fit-content;
-                height: fit-content;
-                background-color: aliceblue;
-                border-style: solid;
-                border-radius: 10px;
-                border-color: black;
-            }
+        .biodata {
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 24px 32px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: left;
+        }
 
-            .bio-content {
-                font-weight: bold;
-                font-size: larger;
-                font-family: Arial, Helvetica, sans-serif;
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-        </style>
-    </head>
+        .bio-content {
+            font-weight: 500;
+            font-size: 16px;
+            margin: 10px 0;
+            color: #374151;
+        }
 
-    <body>
-        <div class="biodata">
-            <p class="bio-content">Project Name: {{project_name}}</h3>
-            <p class="bio-content">Nama: {{name}}</h3>
-            <p class="bio-content">NPM: {{npm}}</h3>
-            <p class="bio-content">Kelas: {{class}}</h3>
-            <p><a href="{%url 'main:homepage'%}"><button>Redirect to App</button></a></p>
-        </div>
-    </body>
+        .biodata button {
+            margin-top: 16px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .biodata button:hover {
+            background-color: #1e40af;
+        }
+
+        .biodata a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="biodata">
+        <p class="bio-content">Project Name: {{ project_name }}</p>
+        <p class="bio-content">Nama: {{ name }}</p>
+        <p class="bio-content">NPM: {{ npm }}</p>
+        <p class="bio-content">Kelas: {{ class }}</p>
+        <a href="{% url 'main:homepage' %}">
+            <button>Redirect to App</button>
+        </a>
+    </div>
+</body>
 </html>

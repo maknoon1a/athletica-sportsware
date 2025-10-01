@@ -5,7 +5,7 @@ from django.core import serializers
 from main.models import Products, Color
 from main.forms import ProductsForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login, logout, aauthenticate
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import datetime
@@ -31,15 +31,21 @@ def show_xml(request):
     data_xml = serializers.serialize("xml", data)
     return HttpResponse(data_xml, content_type="application/xml")
 
-def show_json_byID(request, id):
-    data = Products.objects.get(pk=id)
-    data_json = serializers.serialize("json", [data])
-    return HttpResponse(data_json, content_type="application/json")
-
 def show_xml_byID(request, id):
-    data = Products.objects.get(pk=id)
-    data_xml = serializers.serialize("xml", [data])
-    return HttpResponse(data_xml, content_type="application/xml")
+   try:
+       product = Products.objects.filter(pk=id)
+       xml_data = serializers.serialize("xml", product)
+       return HttpResponse(xml_data, content_type="application/xml")
+   except Products.DoesNotExist:
+       return HttpResponse(status=404)
+
+def show_json_byID(request, id):
+   try:
+       product = Products.objects.filter(pk=id)
+       json_data = serializers.serialize("json", product)
+       return HttpResponse(json_data, content_type="application/json")
+   except Products.DoesNotExist:
+       return HttpResponse(status=404)
 
 @login_required(login_url=reverse_lazy('main:login'))
 def add_product(request):
@@ -67,7 +73,7 @@ def show_products(request):
         'products':products,
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
-    return render(request, 'show_products.html', context)
+    return render(request, 'mainpage.html', context)
 
 def product_detail(request, id):
     product = get_object_or_404(Products, pk=id)
@@ -125,3 +131,19 @@ def user_logout(request):
 def user_cart(request):
     return HttpResponse('Proses Pengembangan...')
 
+def edit_product(request, id):
+    product = get_object_or_404(Products, pk=id);
+    form = ProductsForm(request.POST or None, instance=product)
+    if(form.is_valid() and request.method == "POST"):
+        product = form.save(commit = False)
+        product.user = request.user
+        product.save()
+        form.save_m2m()
+        return redirect('main:homepage')
+    context = {'form': form}
+    return render(request, "create_product.html", context)
+
+def delete_product(request, id):
+    product = get_object_or_404(Products, pk=id)
+    product.delete()
+    return redirect('main:homepage')

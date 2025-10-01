@@ -1,110 +1,103 @@
-{% extends 'base_admin.html' %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create / Edit Product</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
-<!-- template's style made by ai -->
-{% block style %}
-  <style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f8f9fa;
-    }
+  <div class="bg-white shadow-xl rounded-xl w-full max-w-2xl p-8">
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">
+      {% if form.instance.pk %} ✏️ Edit Product {% else %} ➕ Add Product {% endif %}
+    </h1>
 
-    h1 {
-        font-family: 'Inter', sans-serif;
-        font-size: 32px;
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 30px;
-        padding-bottom: 10px;
-    }
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
 
-    form {
-        max-width: 700px;
-        margin: 0 auto;
-        background: #fff;
-        padding: 25px 35px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
+      <!-- Name -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Product Name</label>
+        {{ form.name }}
+      </div>
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+      <!-- Price -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Price</label>
+        {{ form.price }}
+      </div>
 
-    td {
-        padding: 12px 8px;
-        vertical-align: middle;
-        font-size: 15px;
-        color: #444;  
-    }
+      <!-- Stock -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Stock Quantity</label>
+        {{ form.stock_quantity }}
+      </div>
 
-    input[type="text"],
-    input[type="number"],
-    input[type="file"],
-    select,
-    textarea {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-        font-family: 'Inter', sans-serif;
-        transition: border 0.3s ease, box-shadow 0.3s ease;
-    }
+      <!-- Colors (ManyToMany Checkboxes) -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Available Colors</label>
+        <div class="flex flex-wrap gap-4">
+          {{ form.colors }}
+        </div>
+      </div>
 
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    input[type="file"]:focus,
-    select:focus,
-    textarea:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-        outline: none;
-    }
+      <!-- Description -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Description</label>
+        {{ form.description }}
+      </div>
 
-    /* Tombol formal */
-    .submit-cell {
-        text-align: right;
-    }
-    input[type="submit"] {
-        background-color: #007bff;
-        color: white;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 6px;
-        font-size: 15px;
-        font-weight: 600;
-        font-family: 'Inter', sans-serif;
-        cursor: pointer;
-        transition: background 0.3s ease, transform 0.1s ease;
-        text-align: right;
-    }
+      <!-- Thumbnail -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Thumbnail URL</label>
+        {{ form.thumbnail }}
+      </div>
 
-    input[type="submit"]:hover {
-        background-color: #0056b3;
-        transform: translateY(-2px);
-    }
+      <!-- Category -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Category</label>
+        {{ form.category }}
+      </div>
 
-    input[type="submit"]:active {
-        background-color: #004085;
-        transform: translateY(0);
-    }
-  </style>
-{% endblock style %}
+      <!-- Sport Group -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Sport Group</label>
+        {{ form.product_group }}
+      </div>
 
-{% block content %}
-  <h1>Add Products</h1>
+      <!-- Featured -->
+      <div class="flex items-center space-x-2">
+        {{ form.is_featured }}
+        <label class="text-gray-700 font-semibold">Featured Product</label>
+      </div>
 
-  <form method="POST">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td class="submit-cell">
-          <input type="submit" value="ADD PRODUCT" />
-        </td>
-      </tr>
-    </table>
-  </form>
-{% endblock content %}
+      <!-- Size -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Size</label>
+        {{ form.size }}
+      </div>
+
+      <!-- Gender -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Gender</label>
+        {{ form.gender }}
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" 
+        class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-[1.02]">
+        {% if form.instance.pk %} Update Product {% else %} Create Product {% endif %}
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <a href="{% url 'main:homepage' %}" 
+         class="inline-block text-indigo-600 font-medium hover:underline">
+         ← Back to Homepage
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>
