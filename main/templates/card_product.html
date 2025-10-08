@@ -20,7 +20,19 @@
     {% if user.is_authenticated and product.user == user %}
       <!-- Untuk produk milik user sendiri -->
       <div class="flex gap-1.5 sm:gap-2">
-        <button onclick="event.preventDefault(); event.stopPropagation(); openEditProductModal('{{ product.id }}', { name: '{{ product.name|escapejs }}', price: {{ product.price }}, description: '{{ product.description|escapejs }}', detail: '{{ product.detail|escapejs }}', category: '{{ product.category }}', gender: '{{ product.gender }}', product_group: '{{ product.product_group }}', size: '{{ product.size }}', stock_quantity: {{ product.stock_quantity }}, thumbnail: '{{ product.thumbnail|escapejs }}', is_featured: {{ product.is_featured|lower }} });" 
+        <button onclick="event.preventDefault(); event.stopPropagation(); openEditProductModal('{{ product.id }}', 
+        { 
+          name: '{{ product.name|escapejs }}', 
+          price: {{ product.price }}, 
+          description: '{{ product.description|escapejs }}', 
+          detail: '{{ product.detail|escapejs }}', 
+          category: '{{ product.category }}', 
+          gender: '{{ product.gender }}', 
+          product_group: '{{ product.product_group }}', 
+          size: '{{ product.size }}', 
+          stock_quantity: {{ product.stock_quantity }}, 
+          thumbnail: '{{ product.thumbnail|escapejs }}', 
+          is_featured: {{ product.is_featured|lower }} });" 
            type="button"
            class="flex-1 bg-gray-700 text-white py-1.5 sm:py-2 px-2 sm:px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center text-xs sm:text-sm font-medium">
           <svg class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +51,8 @@
       </div>
     {% else %}
       <!-- Untuk produk orang lain -->
-      <button type="button" onclick="event.preventDefault(); event.stopPropagation(); alert('Add to cart feature coming soon!');" class="w-full bg-gray-900 text-white py-1.5 sm:py-2 px-2 sm:px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center text-xs sm:text-sm font-medium">
+      <button type="button" onclick="event.preventDefault(); event.stopPropagation(); alert('Add to cart feature coming soon!');" 
+              gitclass="w-full bg-gray-900 text-white py-1.5 sm:py-2 px-2 sm:px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center text-xs sm:text-sm font-medium">
         <svg class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
         </svg>

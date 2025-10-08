@@ -157,6 +157,6 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://pbp.cs.ui.ac.id/ahmad.omar/athleticasportsware',
+    'https://ahmad-omar-athleticasportsware.pbp.cs.ui.ac.id',
 ]
 
