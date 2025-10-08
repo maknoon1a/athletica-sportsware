@@ -20,8 +20,13 @@ urlpatterns = [
     path('main/logout/', user_logout, name='logout'),
     path('main/user/cart/', user_cart, name='cart'),
     path('main/product/<str:id>/edit/', edit_product, name='edit_product'),
-    path('main/product/<str:id>/delete/', delete_product, name='delete_product')
-    # path('user/profile/', user_profile, name='profile')
+    path('main/product/<str:id>/delete/', delete_product, name='delete_product'),
+    
+    # AJAX endpoints
+    path('main/ajax/add-product/', add_product_ajax, name='add_product_ajax'),
+    path('main/ajax/update-product/<str:id>/', update_product_ajax, name='update_product_ajax'),
+    path('main/ajax/delete-product/<str:id>/', delete_product_ajax, name='delete_product_ajax'),
+    path('main/ajax/products-partial/', products_partial, name='products_partial'),
 ]
 
 if settings.DEBUG:

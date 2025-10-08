@@ -13,7 +13,6 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-# Create your views here.
 def show_main(request):
     context = {
         'project_name': 'Athletica Sportsware',
@@ -21,7 +20,6 @@ def show_main(request):
         'npm': '2406419612',
         'class': 'PBP D'
     }
-
     return render(request, 'main.html', context)
 
 def show_json(request):
@@ -35,28 +33,37 @@ def show_xml(request):
     return HttpResponse(data_xml, content_type="application/xml")
 
 def show_xml_byID(request, id):
-   try:
-       product = Products.objects.filter(pk=id)
-       xml_data = serializers.serialize("xml", product)
-       return HttpResponse(xml_data, content_type="application/xml")
-   except Products.DoesNotExist:
-       return HttpResponse(status=404)
+    try:
+        product = Products.objects.filter(pk=id)
+        xml_data = serializers.serialize("xml", product)
+        return HttpResponse(xml_data, content_type="application/xml")
+    except Products.DoesNotExist:
+        return HttpResponse(status=404)
 
 def show_json_byID(request, id):
-   try:
-       product = Products.objects.filter(pk=id)
-       json_data = serializers.serialize("json", product)
-       return HttpResponse(json_data, content_type="application/json")
-   except Products.DoesNotExist:
-       return HttpResponse(status=404)
+    try:
+        product = Products.objects.filter(pk=id)
+        json_data = serializers.serialize("json", product)
+        return HttpResponse(json_data, content_type="application/json")
+    except Products.DoesNotExist:
+        return HttpResponse(status=404)
 
 @login_required(login_url=reverse_lazy('main:login'))
 def add_product(request):
-    form = ProductsForm(request.POST or None)
-
-    if(form.is_valid() and request.method == "POST"):
-        form.save(commit = False)
-        return redirect('main:homepage')
+    if request.method == "POST":
+        form = ProductsForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.user = request.user
+            product.save()
+            messages.success(request, 'Product added successfully!')
+            return redirect('main:products')
+        else:
+            # Kalau form ga valid, print error buat debug
+            print("Form errors:", form.errors)
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ProductsForm()
     
     context = {'form': form}
     return render(request, "create_product.html", context)
@@ -72,27 +79,26 @@ def show_products(request):
     # Filter by ownership
     if filter_type == "all":
         products = Products.objects.all()
-        result = "All"
+        result = "All Products"
     else:
         products = Products.objects.filter(user=request.user)
-        result += "My Products"
+        result = "My Products"
     
     # Filter by gender
     if filter_gender != "all":
         products = products.filter(gender=filter_gender)
-    result = result + "/" + filter_gender.capitalize()
+        result += " / " + filter_gender.capitalize()
     
     # Filter by sport
     if filter_sport != "all":
         products = products.filter(product_group=filter_sport)
-    result = result + "/" + filter_sport.capitalize()
+        result += " / " + filter_sport.capitalize()
 
     # Filter by category
     if filter_category != "all":
-        products = products.filter(product_group=filter_category)
-    result = result + "/" + filter_category.capitalize()
+        products = products.filter(category=filter_category)
+        result += " / " + filter_category.capitalize()
 
-    
     context = {
         'products': products,
         'last_login': request.COOKIES.get('last_login', 'Never'),
@@ -106,64 +112,17 @@ def show_products(request):
     
     return render(request, 'mainpage.html', context)
 
-# Products partial for AJAX
-def products_partial(request):
-    filter_type = request.GET.get('filter', 'all')
-    filter_gender = request.GET.get('gender', 'all')
-    filter_sport = request.GET.get('sport', 'all')
-    filter_category = request.GET.get('category', 'all')
-    
-    # Filter by ownership
-    if filter_type == "all":
-        products = Products.objects.all()
-    else:
-        products = Products.objects.filter(user=request.user)
-    
-    # Filter by gender
-    if filter_gender != "all":
-        products = products.filter(gender=filter_gender)
-    
-    # Filter by sport
-    if filter_sport != "all":
-        products = products.filter(product_group=filter_sport)
-
-    # Filter by category
-    if filter_category != "all":
-        products = products.filter(product_group=filter_category)
-
-    context = {
-        'products': products,
-        'current_filter': filter_type
-    }
-    
-    return render(request, 'products_partial.html', context)
-
 def show_homepage(request):
-    filter_type = request.GET.get('filter', 'all')
-    filter_result = ""
+    # Get featured products
+    featured_products = Products.objects.filter(is_featured=True)[:8]
     
-    if filter_type == "all":
-        products = Products.objects.all()
-        filter_result += filter_type
-    else:
-        products = Products.objects.filter(user=request.user)
-    
-    filter_gender = request.GET.get('gender', 'all')
-
-    if filter_gender != "all":
-        products = products.filter(gender=filter_gender)
-        filter_result += filter_gender
-
-    filter_sport = request.GET.get('sport', 'all')
-    
-    if filter_sport != "all":
-        products = products.filter(product_group=filter_sport)
-        filter_result += filter_sport
+    # Get all products
+    products = Products.objects.all()[:12]
 
     context = {
-        'products':products,
+        'featured_products': featured_products,
+        'products': products,
         'last_login': request.COOKIES.get('last_login', 'Never'),
-        'filter':filter_result
     }
 
     return render(request, 'homepage.html', context)
@@ -178,64 +137,76 @@ def product_detail(request, id):
 
     return render(request, "product_detail.html", context)
 
-
 def user_register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            messages.success(request, 'Your account has been successfully created!')
             form.save()
+            messages.success(request, 'Your account has been successfully created!')
             return redirect('main:login')
     else:
         form = UserCreationForm()
 
-    context = {'form':form}
+    context = {'form': form}
     return render(request, 'register.html', context)
-
 
 def user_login(request):
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
+            login(request, user)
             response = HttpResponseRedirect(reverse('main:homepage'))
             response.set_cookie('last_login', str(datetime.datetime.now()))
-            login(request, user)
+            messages.success(request, f'Welcome back, {user.username}!')
             return response
+        else:
+            messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm(request)
 
-    context = {'form':form}
+    context = {'form': form}
     return render(request, 'login.html', context)
 
 def user_logout(request):
     logout(request)
     response = HttpResponseRedirect(reverse('main:homepage'))
     response.delete_cookie('last_login')
+    messages.info(request, 'You have been logged out successfully.')
     return response
 
 @login_required(login_url=reverse_lazy('main:login'))
 def user_cart(request):
-    return HttpResponse('Proses Pengembangan...')
+    return HttpResponse('Cart feature is under development...')
 
+@login_required(login_url=reverse_lazy('main:login'))
 def edit_product(request, id):
-    product = get_object_or_404(Products, pk=id);
-    form = ProductsForm(request.POST or None, instance=product)
-    if(form.is_valid() and request.method == "POST"):
-        product = form.save(commit = False)
-        product.user = request.user
-        product.save()
-        form.save_m2m()
-        return redirect('main:homepage')
+    product = get_object_or_404(Products, pk=id, user=request.user)
+    
+    if request.method == "POST":
+        form = ProductsForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product updated successfully!')
+            return redirect('main:products')
+        else:
+            print("Form errors:", form.errors)
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ProductsForm(instance=product)
+    
     context = {'form': form}
     return render(request, "edit_product.html", context)
 
+@login_required(login_url=reverse_lazy('main:login'))
 def delete_product(request, id):
-    product = get_object_or_404(Products, pk=id)
+    product = get_object_or_404(Products, pk=id, user=request.user)
     product.delete()
-    return redirect('main:homepage')
+    messages.success(request, 'Product deleted successfully!')
+    return redirect('main:products')
 
-# AJAX Add Product
+# AJAX VIEWS
+
 @login_required(login_url=reverse_lazy('main:login'))
 @require_POST
 def add_product_ajax(request):
@@ -243,28 +214,34 @@ def add_product_ajax(request):
         try:
             name = request.POST.get('name')
             price = request.POST.get('price')
-            description = request.POST.get('description')
+            description = request.POST.get('description', '')
+            detail = request.POST.get('detail', '')
             category = request.POST.get('category')
             product_group = request.POST.get('product_group')
             gender = request.POST.get('gender')
             size = request.POST.get('size')
             stock_quantity = request.POST.get('stock_quantity', 0)
             is_featured = request.POST.get('is_featured') == 'on'
-            thumbnail = request.POST.get('thumbnail', '')  # URL thumbnail
+            thumbnail = request.POST.get('thumbnail', '')
+            
+            # Validation
+            if not name or not price:
+                return JsonResponse({'success': False, 'error': 'Name and price are required'})
             
             # Create product
             product = Products.objects.create(
                 user=request.user,
                 name=name,
-                price=price,
+                price=int(price),
                 description=description,
+                detail=detail,
                 category=category,
                 product_group=product_group,
                 gender=gender,
                 size=size,
-                stock_quantity=stock_quantity,
+                stock_quantity=int(stock_quantity) if stock_quantity else 0,
                 is_featured=is_featured,
-                thumbnail=thumbnail
+                thumbnail=thumbnail if thumbnail else 'https://via.placeholder.com/300'
             )
             
             return JsonResponse({'success': True, 'product_id': str(product.id)})
@@ -273,7 +250,6 @@ def add_product_ajax(request):
     
     return JsonResponse({'success': False, 'error': 'Invalid request'})
 
-# AJAX Update Product
 @login_required(login_url=reverse_lazy('main:login'))
 @require_POST
 def update_product_ajax(request, id):
@@ -281,28 +257,37 @@ def update_product_ajax(request, id):
         try:
             product = Products.objects.get(id=id, user=request.user)
             
-            product.name = request.POST.get('name')
-            product.price = request.POST.get('price')
-            product.description = request.POST.get('description')
+            name = request.POST.get('name')
+            price = request.POST.get('price')
+            
+            # Validation
+            if not name or not price:
+                return JsonResponse({'success': False, 'error': 'Name and price are required'})
+            
+            product.name = name
+            product.price = int(price)
+            product.description = request.POST.get('description', '')
             product.category = request.POST.get('category')
             product.product_group = request.POST.get('product_group')
             product.gender = request.POST.get('gender')
             product.size = request.POST.get('size')
-            product.stock_quantity = request.POST.get('stock_quantity', 0)
+            product.stock_quantity = int(request.POST.get('stock_quantity', 0))
             product.is_featured = request.POST.get('is_featured') == 'on'
-            product.thumbnail = request.POST.get('thumbnail', '')
+            
+            thumbnail = request.POST.get('thumbnail', '')
+            if thumbnail:
+                product.thumbnail = thumbnail
             
             product.save()
             
             return JsonResponse({'success': True})
         except Products.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Product not found'})
+            return JsonResponse({'success': False, 'error': 'Product not found or you do not have permission to edit it'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Invalid request'})
 
-# AJAX Delete Product
 @login_required(login_url=reverse_lazy('main:login'))
 @require_POST
 def delete_product_ajax(request, id):
@@ -313,8 +298,43 @@ def delete_product_ajax(request, id):
             
             return JsonResponse({'success': True})
         except Products.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Product not found'})
+            return JsonResponse({'success': False, 'error': 'Product not found or you do not have permission to delete it'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Invalid request'})
+
+def products_partial(request):
+    """AJAX endpoint to get products HTML partial"""
+    filter_type = request.GET.get('filter', 'all')
+    filter_gender = request.GET.get('gender', 'all')
+    filter_sport = request.GET.get('sport', 'all')
+    filter_category = request.GET.get('category', 'all')
+    
+    # Filter by ownership
+    if filter_type == "all":
+        products = Products.objects.all()
+    else:
+        if request.user.is_authenticated:
+            products = Products.objects.filter(user=request.user)
+        else:
+            products = Products.objects.none()
+    
+    # Filter by gender
+    if filter_gender != "all":
+        products = products.filter(gender=filter_gender)
+    
+    # Filter by sport
+    if filter_sport != "all":
+        products = products.filter(product_group=filter_sport)
+
+    # Filter by category
+    if filter_category != "all":
+        products = products.filter(category=filter_category)
+
+    context = {
+        'products': products,
+        'current_filter': filter_type
+    }
+    
+    return render(request, 'products_partial.html', context)

@@ -106,6 +106,13 @@
           </div>
 
           <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">Detailed Information</label>
+            <textarea name="detail" id="productDetail" rows="4"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                      placeholder="Provide detailed product information (optional)"></textarea>
+          </div>
+
+          <div>
             <label class="block text-sm font-semibold text-gray-900 mb-2">Thumbnail URL</label>
             <input type="url" name="thumbnail" id="productThumbnail" 
                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
@@ -213,9 +220,27 @@
 
 <script>
 let currentProductId = null;
+let isEditMode = false;
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
 
 // Modal Functions
 function openAddProductModal() {
+  isEditMode = false;
+  currentProductId = null;
   document.getElementById('modalTitle').textContent = 'Add Product';
   document.getElementById('submitBtn').textContent = 'Add Product';
   document.getElementById('productForm').reset();
@@ -223,13 +248,16 @@ function openAddProductModal() {
 }
 
 function openEditProductModal(productId, productData) {
+  isEditMode = true;
+  currentProductId = productId;
   document.getElementById('modalTitle').textContent = 'Edit Product';
   document.getElementById('submitBtn').textContent = 'Update Product';
   
   // Fill form with existing data
   document.getElementById('productName').value = productData.name;
   document.getElementById('productPrice').value = productData.price;
-  document.getElementById('productDescription').value = productData.description;
+  document.getElementById('productDescription').value = productData.description || '';
+  document.getElementById('productDetail').value = productData.detail || '';
   document.getElementById('productCategory').value = productData.category;
   document.getElementById('productGender').value = productData.gender;
   document.getElementById('productGroup').value = productData.product_group;
@@ -238,13 +266,13 @@ function openEditProductModal(productId, productData) {
   document.getElementById('productThumbnail').value = productData.thumbnail || '';
   document.getElementById('productFeatured').checked = productData.is_featured;
   
-  currentProductId = productId;
   document.getElementById('productModal').classList.remove('hidden');
 }
 
 function closeProductModal() {
   document.getElementById('productModal').classList.add('hidden');
   currentProductId = null;
+  isEditMode = false;
 }
 
 function openDeleteModal(productId, productName) {
@@ -283,16 +311,17 @@ function showToast(message, type = 'success') {
   }, 3000);
 }
 
-// AJAX Functions
+// AJAX Form Submit
 document.getElementById('productForm').addEventListener('submit', function(e) {
   e.preventDefault();
   
   const formData = new FormData(this);
-  const url = currentProductId ? 
+  const csrftoken = getCookie('csrftoken');
+  
+  const url = isEditMode ? 
     `/main/ajax/update-product/${currentProductId}/` : 
     '/main/ajax/add-product/';
   
-  // Show loading state
   const submitBtn = document.getElementById('submitBtn');
   const originalText = submitBtn.textContent;
   submitBtn.textContent = 'Loading...';
@@ -303,13 +332,14 @@ document.getElementById('productForm').addEventListener('submit', function(e) {
     body: formData,
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': csrftoken,
     },
   })
   .then(response => response.json())
   .then(data => {
     if (data.success) {
       closeProductModal();
-      showToast(currentProductId ? 'Product updated successfully!' : 'Product added successfully!');
+      showToast(isEditMode ? 'Product updated successfully!' : 'Product added successfully!');
       refreshProducts();
     } else {
       showToast(data.error || 'Something went wrong!', 'error');
@@ -325,9 +355,11 @@ document.getElementById('productForm').addEventListener('submit', function(e) {
   });
 });
 
+// AJAX Delete
 function confirmDelete() {
   if (!currentProductId) return;
   
+  const csrftoken = getCookie('csrftoken');
   const deleteBtn = document.querySelector('#deleteModal button:last-child');
   const originalText = deleteBtn.textContent;
   deleteBtn.textContent = 'Deleting...';
@@ -337,7 +369,7 @@ function confirmDelete() {
     method: 'POST',
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
-      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      'X-CSRFToken': csrftoken,
     },
   })
   .then(response => response.json())
@@ -360,6 +392,7 @@ function confirmDelete() {
   });
 }
 
+// AJAX Refresh Products
 function refreshProducts() {
   const container = document.getElementById('products-container');
   const currentUrl = new URL(window.location.href);

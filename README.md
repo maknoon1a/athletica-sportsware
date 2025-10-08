@@ -152,4 +152,32 @@ Cookies tidak sepenuhnya aman secara default karena rentan terhadap pencurian me
 
 Tugas 6 
 
+Pada synchronous request, setiap permintaan harus menunggu respons dari server sebelum dapat melanjutkan proses berikutnya. Artinya, seluruh alur eksekusi akan berhenti sementara hingga server mengirimkan data yang diminta. Mekanisme ini sering kali membuat aplikasi terasa lambat jika proses di server memerlukan waktu lama.
+Sebaliknya, asynchronous request memungkinkan proses lain tetap berjalan tanpa harus menunggu respons dari server. Permintaan dikirim di latar belakang, dan hasilnya akan diproses begitu respons diterima. Pendekatan ini umum digunakan dalam pengembangan aplikasi modern menggunakan AJAX karena meningkatkan performa serta memberikan pengalaman pengguna yang lebih responsif.
+Contohnya, saat pengguna mengetik di kolom pencarian dan hasil muncul secara otomatis tanpa perlu memuat ulang halaman, proses tersebut dilakukan secara asynchronous.
 
+AJAX (Asynchronous JavaScript and XML) bekerja dengan mengirimkan data ke server Django menggunakan HTTP request di latar belakang tanpa harus me-refresh halaman.
+Alur umumnya adalah sebagai berikut:
+      - Pengguna melakukan aksi di browser (misalnya klik tombol atau mengetik di form).
+      - JavaScript mengirim request menggunakan XMLHttpRequest atau fetch() ke URL Django tertentu.
+      - Django menerima request tersebut di view, memproses data (misalnya menyimpan ke database atau mengambil data tertentu), lalu mengembalikan  
+      respons dalam format JSON.
+      - JavaScript di sisi client menerima JSON tersebut dan memperbarui tampilan halaman secara dinamis.
+      - Dengan alur ini, interaksi pengguna menjadi lebih cepat dan efisien karena hanya bagian tertentu dari halaman yang diperbarui, bukan keseluruhan halaman.
+
+Penggunaan AJAX memberikan keuntungan utama berupa peningkatan efisiensi dan interaktivitas aplikasi. Pada render biasa, setiap kali pengguna berinteraksi, seluruh halaman perlu dimuat ulang oleh server dan dikirim ulang ke browser. Hal ini menyebabkan waktu respon lebih lama dan konsumsi bandwidth lebih besar.
+Dengan AJAX, hanya data yang diperlukan yang dikirim dan diterima, sehingga proses menjadi lebih cepat dan ringan. Selain itu, pengguna dapat tetap berinteraksi dengan halaman selama data sedang diproses di latar belakang.
+Keuntungan lain adalah pengalaman pengguna menjadi lebih halus — misalnya, pada fitur komentar atau pengiriman formulir yang tidak perlu refresh halaman, menjadikan aplikasi terasa lebih modern dan responsif.
+
+Untuk memastikan keamanan AJAX pada fitur seperti Login dan Register, langkah pertama yang penting adalah menggunakan csrf_token. Token ini melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF) dengan memastikan bahwa setiap request berasal dari sumber yang sah (domain aplikasi itu sendiri).
+Selain itu, Django menyediakan middleware bawaan yang secara otomatis memvalidasi token tersebut setiap kali request POST diterima.
+Langkah lain yang perlu dilakukan adalah:
+      - Gunakan HTTPS agar data terenkripsi saat dikirim.
+      - Validasi input di sisi server menggunakan method is_valid() pada form Django agar data yang masuk sesuai aturan.
+      - Hindari mengembalikan informasi sensitif dalam response AJAX, misalnya pesan error yang terlalu detail.
+Dengan langkah-langkah ini, keamanan aplikasi dapat terjaga tanpa mengorbankan kenyamanan pengguna.
+
+AJAX memiliki dampak besar terhadap User Experience (UX) karena memungkinkan halaman web berinteraksi secara cepat dan real-time tanpa harus memuat ulang seluruh halaman. Pengguna dapat melihat perubahan langsung pada tampilan, seperti notifikasi, update data, atau hasil pencarian instan, sehingga aplikasi terasa lebih interaktif dan responsif.
+Selain itu, AJAX mengurangi waktu tunggu dan beban server karena hanya sebagian kecil data yang dikirim.
+Sebagai contoh, pada fitur keranjang belanja di e-commerce, pengguna dapat menambah atau menghapus produk tanpa berpindah halaman — hal ini menciptakan alur belanja yang lebih halus dan efisien.
+Dengan demikian, AJAX bukan hanya meningkatkan performa teknis, tetapi juga berperan penting dalam membangun pengalaman pengguna yang nyaman dan modern.

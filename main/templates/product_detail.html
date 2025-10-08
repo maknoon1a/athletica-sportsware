@@ -5,9 +5,9 @@
 <div class="max-w-6xl mx-auto px-4 py-8 font-inter">
   <!-- Breadcrumb -->
   <nav class="flex text-sm text-gray-500 mb-8" aria-label="Breadcrumb">
-    <a href="{% url 'home' %}" class="hover:text-blue-600 transition-colors">Home</a>
+    <a href="{% url 'main:homepage' %}" class="hover:text-blue-600 transition-colors">Home</a>
     <span class="mx-2">/</span>
-    <a href="{% url 'products' %}?category={{ product.category }}" class="hover:text-blue-600 transition-colors">{{ product.get_category_display }}</a>
+    <a href="{% url 'main:products' %}?category={{ product.category }}" class="hover:text-blue-600 transition-colors">{{ product.get_category_display }}</a>
     <span class="mx-2">/</span>
     <span class="text-gray-700 font-medium">{{ product.name }}</span>
   </nav>
