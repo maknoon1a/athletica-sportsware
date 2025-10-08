@@ -1,0 +1,128 @@
+{% extends "base_user.html" %}
+{% load humanize %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8 font-inter">
+  <!-- Breadcrumb -->
+  <nav class="flex text-sm text-gray-500 mb-8" aria-label="Breadcrumb">
+    <a href="{% url 'home' %}" class="hover:text-blue-600 transition-colors">Home</a>
+    <span class="mx-2">/</span>
+    <a href="{% url 'products' %}?category={{ product.category }}" class="hover:text-blue-600 transition-colors">{{ product.get_category_display }}</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700 font-medium">{{ product.name }}</span>
+  </nav>
+
+  <!-- Product Detail -->
+  <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+    <!-- Left: Product Image -->
+    <div class="flex-1">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-300">
+        <img src="{{ product.thumbnail }}" alt="{{ product.name }}"
+             class="w-full h-auto rounded-xl object-cover">
+      </div>
+    </div>
+
+    <!-- Right: Product Info -->
+    <div class="flex-1">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-300">
+        <!-- Product Header -->
+        <div class="mb-6">
+          <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">{{ product.name }}</h1>
+          <p class="text-gray-600 text-lg leading-relaxed mb-4">{{ product.description }}</p>
+          
+          <!-- Seller Info -->
+          <div class="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <span class="text-white text-sm font-semibold">
+                {% if product.user %}{{ product.user.username|first|upper }}{% else %}S{% endif %}
+              </span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-900">
+                {% if product.user %}{{ product.user.username }}{% else %}System{% endif %}
+              </p>
+              <p class="text-xs text-gray-500">Seller</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price Section -->
+        <div class="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+          <p class="text-sm text-gray-600 mb-1">Harga</p>
+          <p class="text-3xl font-bold text-gray-900">Rp {{ product.price|intcomma }}</p>
+          <p class="text-xs text-gray-500 mt-1">Stock: {{ product.stock_quantity }} | Terjual: {{ product.sold_count }}</p>
+        </div>
+
+        <!-- Product Details Grid -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="bg-gray-50 rounded-lg p-3">
+            <p class="text-xs text-gray-500 mb-1">Kategori</p>
+            <p class="text-sm font-medium text-gray-900">{{ product.get_category_display }}</p>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-3">
+            <p class="text-xs text-gray-500 mb-1">Gender</p>
+            <p class="text-sm font-medium text-gray-900">{{ product.get_gender_display }}</p>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-3">
+            <p class="text-xs text-gray-500 mb-1">Group</p>
+            <p class="text-sm font-medium text-gray-900">{{ product.get_product_group_display }}</p>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-3">
+            <p class="text-xs text-gray-500 mb-1">Ukuran</p>
+            <p class="text-sm font-medium text-gray-900">{{ product.get_size_display }}</p>
+          </div>
+        </div>
+
+        <!-- Quantity Selector -->
+        <div class="mb-6">
+          <p class="text-gray-700 font-medium mb-3">Kuantitas:</p>
+          <div class="flex items-center border border-gray-300 rounded-xl overflow-hidden w-32">
+            <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center">
+              <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+              </svg>
+            </button>
+            <input type="text" value="1"
+                   class="w-full text-center outline-none border-x border-gray-300 py-2 bg-white">
+            <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center">
+              <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3">
+          <button class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md">
+            Tambah ke Keranjang
+          </button>
+          <button class="px-4 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Description Section -->
+  <div class="mt-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-300">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">Deskripsi Produk</h2>
+      <div class="prose prose-gray max-w-none">
+        <p class="text-gray-600 leading-relaxed whitespace-pre-line">{{ product.detail }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products Section -->
+  <div class="mt-12">
+    <h2 class="text-xl font-bold text-gray-900 mb-6">Produk Serupa</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Related products would go here -->
+    </div>
+  </div>
+</div>
+{% endblock %}

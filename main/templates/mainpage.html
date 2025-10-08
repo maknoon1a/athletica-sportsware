@@ -1,0 +1,419 @@
+{% extends 'base_user.html' %}
+
+{% block content %}
+{% load static %}
+
+<!-- All Products -->
+<section id="products" class="py-6 sm:py-8 md:py-12 bg-white border-t border-gray-100">
+  <div class="px-4 sm:px-6 md:px-10 mb-4 sm:mb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+      <div>
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold">All Products</h2>
+        <!-- Filter Breadcrumb -->
+        <p class="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">{{ filter_display }}</p>
+      </div>
+
+      <div class="flex items-center space-x-2 sm:space-x-3 mt-2 sm:mt-0">
+        <!-- View All -->
+        <a href="?filter=all" 
+           class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold rounded-full transition
+                  {% if current_filter == 'all' %}
+                    text-white bg-black border border-black
+                  {% else %}
+                    border border-gray-300 text-gray-700 hover:bg-gray-100
+                  {% endif %}">
+          View All
+        </a>
+
+        <!-- My Products (only when logged in) -->
+        {% if user.is_authenticated %}
+        <a href="?filter=my" 
+           class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold rounded-full transition
+                  {% if current_filter == 'my' %}
+                    text-white bg-black border border-black
+                  {% else %}
+                    border border-gray-300 text-gray-700 hover:bg-gray-100
+                  {% endif %}">
+          My Products
+        </a>
+
+        <!-- Add Product Button (hanya muncul di My Products) -->
+        {% if current_filter == 'my' %}
+        <button onclick="openAddProductModal()"
+           class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold rounded-full transition
+                  bg-green-600 text-white border border-green-600 hover:bg-green-700">
+          + Add Product
+        </button>
+        {% endif %}
+
+        <!-- Refresh Button -->
+        <button onclick="refreshProducts()" 
+                class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold rounded-full transition
+                       border border-gray-300 text-gray-700 hover:bg-gray-100">
+          🔄 Refresh
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  <div id="products-container">
+    {% include 'products_partial.html' %}
+  </div>
+</section>
+
+<!-- Add/Edit Product Modal -->
+<div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h3 id="modalTitle" class="text-xl font-bold">Add Product</h3>
+        <button onclick="closeProductModal()" class="text-gray-500 hover:text-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <form id="productForm" method="POST">
+        {% csrf_token %}
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">Product Name</label>
+            <input type="text" name="name" id="productName" required 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black">
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Price</label>
+              <input type="number" name="price" id="productPrice" required 
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Stock Quantity</label>
+              <input type="number" name="stock_quantity" id="productStock" 
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black" value="0">
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">Description</label>
+            <textarea name="description" id="productDescription" rows="3"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">Thumbnail URL</label>
+            <input type="url" name="thumbnail" id="productThumbnail" 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                   placeholder="https://example.com/image.jpg">
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Category</label>
+              <select name="category" id="productCategory" 
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black">
+                <option value="jersey">Jersey</option>
+                <option value="shorts">Shorts</option>
+                <option value="shoes">Shoes</option>
+                <option value="tracksuit">Tracksuit</option>
+                <option value="accessories">Accessories</option>
+                <option value="equipment">Equipment</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Sport Group</label>
+              <select name="product_group" id="productGroup" 
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black">
+                <option value="football">Football</option>
+                <option value="basketball">Basketball</option>
+                <option value="badminton">Badminton</option>
+                <option value="volleyball">Volleyball</option>
+                <option value="running">Running</option>
+                <option value="gym">Gym/Fitness</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Gender</label>
+              <select name="gender" id="productGender" 
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black">
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+                <option value="kids">Kids</option>
+                <option value="unisex">Unisex</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Size</label>
+              <select name="size" id="productSize" 
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black">
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <input type="checkbox" name="is_featured" id="productFeatured" 
+                   class="w-4 h-4 text-black border-gray-300 rounded focus:ring-black">
+            <label for="productFeatured" class="text-sm font-semibold text-gray-900">Featured Product</label>
+          </div>
+          
+          <div class="flex justify-end space-x-3 pt-4">
+            <button type="button" onclick="closeProductModal()" 
+                    class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit" id="submitBtn"
+                    class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800">
+              Add Product
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg w-full max-w-md">
+    <div class="p-6">
+      <h3 class="text-xl font-bold mb-4">Delete Product</h3>
+      <p class="text-gray-600 mb-6">Are you sure you want to delete "<span id="deleteProductName"></span>"? This action cannot be undone.</p>
+      <div class="flex justify-end space-x-3">
+        <button onclick="closeDeleteModal()" 
+                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+          Cancel
+        </button>
+        <button onclick="confirmDelete()" 
+                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+<script>
+let currentProductId = null;
+
+// Modal Functions
+function openAddProductModal() {
+  document.getElementById('modalTitle').textContent = 'Add Product';
+  document.getElementById('submitBtn').textContent = 'Add Product';
+  document.getElementById('productForm').reset();
+  document.getElementById('productModal').classList.remove('hidden');
+}
+
+function openEditProductModal(productId, productData) {
+  document.getElementById('modalTitle').textContent = 'Edit Product';
+  document.getElementById('submitBtn').textContent = 'Update Product';
+  
+  // Fill form with existing data
+  document.getElementById('productName').value = productData.name;
+  document.getElementById('productPrice').value = productData.price;
+  document.getElementById('productDescription').value = productData.description;
+  document.getElementById('productCategory').value = productData.category;
+  document.getElementById('productGender').value = productData.gender;
+  document.getElementById('productGroup').value = productData.product_group;
+  document.getElementById('productSize').value = productData.size;
+  document.getElementById('productStock').value = productData.stock_quantity;
+  document.getElementById('productThumbnail').value = productData.thumbnail || '';
+  document.getElementById('productFeatured').checked = productData.is_featured;
+  
+  currentProductId = productId;
+  document.getElementById('productModal').classList.remove('hidden');
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').classList.add('hidden');
+  currentProductId = null;
+}
+
+function openDeleteModal(productId, productName) {
+  document.getElementById('deleteProductName').textContent = productName;
+  currentProductId = productId;
+  document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.add('hidden');
+  currentProductId = null;
+}
+
+// Toast Function
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `px-4 py-3 rounded-lg shadow-lg transform transition-all duration-300 ${
+    type === 'success' ? 'bg-green-500 text-white' : 
+    type === 'error' ? 'bg-red-500 text-white' : 
+    'bg-blue-500 text-white'
+  }`;
+  toast.textContent = message;
+  
+  const container = document.getElementById('toastContainer');
+  container.appendChild(toast);
+  
+  // Auto remove after 3 seconds
+  setTimeout(() => {
+    toast.style.transform = 'translateX(100%)';
+    toast.style.opacity = '0';
+    setTimeout(() => {
+      if (container.contains(toast)) {
+        container.removeChild(toast);
+      }
+    }, 300);
+  }, 3000);
+}
+
+// AJAX Functions
+document.getElementById('productForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const formData = new FormData(this);
+  const url = currentProductId ? 
+    `/main/ajax/update-product/${currentProductId}/` : 
+    '/main/ajax/add-product/';
+  
+  // Show loading state
+  const submitBtn = document.getElementById('submitBtn');
+  const originalText = submitBtn.textContent;
+  submitBtn.textContent = 'Loading...';
+  submitBtn.disabled = true;
+  
+  fetch(url, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      closeProductModal();
+      showToast(currentProductId ? 'Product updated successfully!' : 'Product added successfully!');
+      refreshProducts();
+    } else {
+      showToast(data.error || 'Something went wrong!', 'error');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showToast('Something went wrong!', 'error');
+  })
+  .finally(() => {
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+  });
+});
+
+function confirmDelete() {
+  if (!currentProductId) return;
+  
+  const deleteBtn = document.querySelector('#deleteModal button:last-child');
+  const originalText = deleteBtn.textContent;
+  deleteBtn.textContent = 'Deleting...';
+  deleteBtn.disabled = true;
+  
+  fetch(`/main/ajax/delete-product/${currentProductId}/`, {
+    method: 'POST',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      closeDeleteModal();
+      showToast('Product deleted successfully!');
+      refreshProducts();
+    } else {
+      showToast(data.error || 'Something went wrong!', 'error');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showToast('Something went wrong!', 'error');
+  })
+  .finally(() => {
+    deleteBtn.textContent = originalText;
+    deleteBtn.disabled = false;
+  });
+}
+
+function refreshProducts() {
+  const container = document.getElementById('products-container');
+  const currentUrl = new URL(window.location.href);
+  
+  // Show loading state
+  container.innerHTML = `
+    <div class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+      <span class="ml-3 text-gray-600">Loading products...</span>
+    </div>
+  `;
+  
+  fetch('/main/ajax/products-partial/' + currentUrl.search, {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.text();
+  })
+  .then(html => {
+    container.innerHTML = html;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    container.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-12">
+        <p class="text-red-500 mb-4">Error loading products. Please try again.</p>
+        <button onclick="refreshProducts()" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800">
+          Retry
+        </button>
+      </div>
+    `;
+  });
+}
+
+// Close modals when clicking outside
+document.getElementById('productModal').addEventListener('click', function(e) {
+  if (e.target === this) closeProductModal();
+});
+
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDeleteModal();
+});
+
+// Escape key to close modals
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeProductModal();
+    closeDeleteModal();
+  }
+});
+</script>
+{% endblock content %}

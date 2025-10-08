@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Athletica Sportswear</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  {% load static %}
+  <script>
+    // Toggle mobile menu
+    function toggleMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    // Toggle dropdown menus
+    function toggleDropdown(id) {
+      const dropdown = document.getElementById(id);
+      const allDropdowns = document.querySelectorAll('[id="men"], [id="women"], [id="kids"], [id="unisex"], [id="sports"]');
+      
+      // Close all other dropdowns
+      allDropdowns.forEach(dd => {
+        if (dd.id !== id) {
+          dd.classList.add('hidden');
+        }
+      });
+      
+      // Toggle current dropdown
+      dropdown.classList.toggle('hidden');
+    }
+
+    // Toggle profile sidebar
+    function toggleProfileSidebar() {
+      const sidebar = document.getElementById('profileSidebar');
+      sidebar.classList.toggle('translate-x-full');
+      // Add backdrop
+      if (!sidebar.classList.contains('translate-x-full')) {
+        document.getElementById('sidebarBackdrop').classList.remove('hidden');
+      } else {
+        document.getElementById('sidebarBackdrop').classList.add('hidden');
+      }
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdowns = document.querySelectorAll('[id="men"], [id="women"], [id="kids"], [id="unisex"], [id="sports"]');
+      const isClickInside = event.target.closest('.relative');
+      
+      if (!isClickInside) {
+        dropdowns.forEach(dd => dd.classList.add('hidden'));
+      }
+    });
+
+    // Close sidebar when clicking backdrop
+    function closeSidebar() {
+      document.getElementById('profileSidebar').classList.add('translate-x-full');
+      document.getElementById('sidebarBackdrop').classList.add('hidden');
+    }
+  </script>
+</head>
+
+<body class="bg-white text-gray-900">
+
+  <div class="bg-black text-white text-center font-medium py-1.5 text-xs sm:py-2 sm:text-sm">
+    Flash Sale Up to 60% + Free Shipping 🔥
+  </div>
+
+  <!-- Navbar -->
+  <nav class="border-b border-gray-200 bg-white">
+    <!-- Desktop Navbar -->
+    <div class="hidden md:flex items-center justify-between px-6 h-16">
+      <!-- Left: Logo -->
+      <a href="{% url 'main:homepage' %}" class="flex items-center space-x-3">
+        <img src="{% static 'images/logo.png' %}" alt="Athletica Sportswear" class="w-10 h-10 object-contain">
+        <div class="flex flex-col leading-tight">
+          <span class="font-semibold text-sm tracking-wide">ATHLETICA</span>
+          <span class="font-semibold text-sm tracking-wide">SPORTSWEAR</span>
+        </div>
+      </a>
+
+      <!-- Search bar (desktop) -->
+      <div class="flex items-center justify-center w-full max-w-md bg-gray-100 rounded-full px-3 h-9 ml-20">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+        </svg>
+        <input type="text" placeholder="Search..." 
+          class="bg-transparent border-none outline-none w-full px-2 text-sm text-gray-700 focus:outline-none focus:ring-0" />
+      </div>
+
+
+      <!-- Filter & Cart (desktop) -->
+      <div class="hidden md:flex items-center space-x-4 ml-8 mr-10">
+        <!-- Filter -->
+        <button class="text-gray-700 hover:text-black mr-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 4h18l-7 8v8l-4-2v-6L3 4z" />
+          </svg>
+        </button>
+
+        <!-- Cart -->
+        <div class="relative">
+          <a href="{% url 'main:cart' %}" class="text-gray-700 hover:text-black">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5 6m2 7v8m10-8v8m-6-8v8" />
+            </svg>
+          </a>
+          <span
+            class="absolute -top-2 -right-2 bg-black text-white text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center">0</span>
+        </div>
+      </div>
+
+      <!-- Center nav links (desktop only) -->
+      <div class="flex space-x-12 text-sm font-medium ml-auto mr-auto">
+        <!-- MEN -->
+        <div class="relative">
+          <button onclick="toggleDropdown('men')" class="hover:text-black text-gray-700">MEN</button>
+          <div id="men" 
+            class="absolute left-0 hidden bg-white border border-gray-200 shadow-md rounded-md mt-2 py-2 w-40 z-50">
+            <a href="{% url 'main:products' %}?gender=men&category=all" class="block px-4 py-2 hover:bg-gray-100">All Categories</a>
+            <a href="{% url 'main:products' %}?gender=men&category=jersey" class="block px-4 py-2 hover:bg-gray-100">Jersey</a>
+            <a href="{% url 'main:products' %}?gender=men&category=shorts" class="block px-4 py-2 hover:bg-gray-100">Shorts</a>
+            <a href="{% url 'main:products' %}?gender=men&category=shoes" class="block px-4 py-2 hover:bg-gray-100">Shoes</a>
+            <a href="{% url 'main:products' %}?gender=men&category=tracksuit" class="block px-4 py-2 hover:bg-gray-100">Tracksuit</a>
+            <a href="{% url 'main:products' %}?gender=men&category=accessories" class="block px-4 py-2 hover:bg-gray-100">Accessories</a>
+            <a href="{% url 'main:products' %}?gender=men&category=equipment" class="block px-4 py-2 hover:bg-gray-100">Equipment</a>
+          </div>
+        </div>
+
+        <!-- WOMEN -->
+        <div class="relative">
+          <button onclick="toggleDropdown('women')" class="hover:text-black text-gray-700">WOMEN</button>
+          <div id="women"
+            class="absolute left-0 hidden bg-white border border-gray-200 shadow-md rounded-md mt-2 py-2 w-40 z-50">
+            <a href="{% url 'main:products' %}?gender=women&category=all" class="block px-4 py-2 hover:bg-gray-100">All Categories</a>
+            <a href="{% url 'main:products' %}?gender=women&category=jersey" class="block px-4 py-2 hover:bg-gray-100">Jersey</a>
+            <a href="{% url 'main:products' %}?gender=women&category=shorts" class="block px-4 py-2 hover:bg-gray-100">Shorts</a>
+            <a href="{% url 'main:products' %}?gender=women&category=shoes" class="block px-4 py-2 hover:bg-gray-100">Shoes</a>
+            <a href="{% url 'main:products' %}?gender=women&category=tracksuit" class="block px-4 py-2 hover:bg-gray-100">Tracksuit</a>
+            <a href="{% url 'main:products' %}?gender=women&category=accessories" class="block px-4 py-2 hover:bg-gray-100">Accessories</a>
+            <a href="{% url 'main:products' %}?gender=women&category=equipment" class="block px-4 py-2 hover:bg-gray-100">Equipment</a>
+          </div>
+        </div>
+
+        <!-- KIDS -->
+        <div class="relative">
+          <button onclick="toggleDropdown('kids')" class="hover:text-black text-gray-700">KIDS</button>
+          <div id="kids"
+            class="absolute left-0 hidden bg-white border border-gray-200 shadow-md rounded-md mt-2 py-2 w-40 z-50">
+            <a href="{% url 'main:products' %}?gender=kids&category=all" class="block px-4 py-2 hover:bg-gray-100">All Categories</a>
+            <a href="{% url 'main:products' %}?gender=kids&category=jersey" class="block px-4 py-2 hover:bg-gray-100">Jersey</a>
+            <a href="{% url 'main:products' %}?gender=kids&category=shorts" class="block px-4 py-2 hover:bg-gray-100">Shorts</a>
+            <a href="{% url 'main:products' %}?gender=kids&category=shoes" class="block px-4 py-2 hover:bg-gray-100">Shoes</a>
+            <a href="{% url 'main:products' %}?gender=kids&category=tracksuit" class="block px-4 py-2 hover:bg-gray-100">Tracksuit</a>
+            <a href="{% url 'main:products' %}?gender=kids&category=accessories" class="block px-4 py-2 hover:bg-gray-100">Accessories</a>
+            <a href="{% url 'main:products' %}?gender=kids&category=equipment" class="block px-4 py-2 hover:bg-gray-100">Equipment</a>
+          </div>
+        </div>
+
+        <!-- UNISEX -->
+        <div class="relative">
+          <button onclick="toggleDropdown('unisex')" class="hover:text-black text-gray-700">UNISEX</button>
+          <div id="unisex"
+            class="absolute left-0 hidden bg-white border border-gray-200 shadow-md rounded-md mt-2 py-2 w-40 z-50">
+            <a href="{% url 'main:products' %}?gender=unisex&category=all" class="block px-4 py-2 hover:bg-gray-100">All Categories</a>
+            <a href="{% url 'main:products' %}?gender=unisex&category=jersey" class="block px-4 py-2 hover:bg-gray-100">Jersey</a>
+            <a href="{% url 'main:products' %}?gender=unisex&category=shorts" class="block px-4 py-2 hover:bg-gray-100">Shorts</a>
+            <a href="{% url 'main:products' %}?gender=unisex&category=shoes" class="block px-4 py-2 hover:bg-gray-100">Shoes</a>
+            <a href="{% url 'main:products' %}?gender=unisex&category=tracksuit" class="block px-4 py-2 hover:bg-gray-100">Tracksuit</a>
+            <a href="{% url 'main:products' %}?gender=unisex&category=accessories" class="block px-4 py-2 hover:bg-gray-100">Accessories</a>
+            <a href="{% url 'main:products' %}?gender=unisex&category=equipment" class="block px-4 py-2 hover:bg-gray-100">Equipment</a>
+          </div>
+        </div>
+
+        <!-- SPORTS -->
+        <div class="relative">
+          <button onclick="toggleDropdown('sports')" class="hover:text-black text-gray-700">SPORTS</button>
+          <div id="sports"
+            class="absolute left-0 hidden bg-white border border-gray-200 shadow-md rounded-md mt-2 py-2 w-48 z-50">
+            <a href="{% url 'main:products' %}?gender=sports&sport=all" class="block px-4 py-2 hover:bg-gray-100">All Sports</a>
+            <a href="{% url 'main:products' %}?gender=sports&sport=football" class="block px-4 py-2 hover:bg-gray-100">Football</a>
+            <a href="{% url 'main:products' %}?gender=sports&sport=basketball" class="block px-4 py-2 hover:bg-gray-100">Basketball</a>
+            <a href="{% url 'main:products' %}?gender=sports&sport=badminton" class="block px-4 py-2 hover:bg-gray-100">Badminton</a>
+            <a href="{% url 'main:products' %}?gender=sports&sport=volleyball" class="block px-4 py-2 hover:bg-gray-100">Volleyball</a>
+            <a href="{% url 'main:products' %}?gender=sports&sport=running" class="block px-4 py-2 hover:bg-gray-100">Running</a>
+            <a href="{% url 'main:products' %}?gender=sports&sport=gym" class="block px-4 py-2 hover:bg-gray-100">Gym/Fitness</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right section (Profile) -->
+      <div class="relative">
+        <button onclick="toggleProfileSidebar()" class="text-gray-700 hover:text-black flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5.121 17.804A9 9 0 1118.878 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navbar -->
+    <div class="md:hidden">
+      <!-- Top row: Logo -->
+      <div class="flex items-center justify-between px-3 py-2">
+        <a href="{% url 'main:homepage' %}" class="flex items-center space-x-2">
+          <img src="{% static 'images/logo.png' %}" alt="Athletica Sportswear" class="w-8 h-8 object-contain">
+          <div class="flex flex-col leading-tight">
+            <span class="font-semibold text-xs tracking-wide">ATHLETICA</span>
+            <span class="font-semibold text-xs tracking-wide">SPORTSWEAR</span>
+          </div>
+        </a>
+        <button class="text-gray-700 hover:text-black" onclick="toggleMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Bottom row: Search, Filter, Cart, Profile -->
+      <div class="flex items-center gap-2 px-3 py-2">
+        <!-- Search bar -->
+        <div class="flex items-center bg-gray-100 rounded-full px-2 py-1 w-[70%] max-w-xs">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+          </svg>
+          <input type="text" placeholder="Search..."
+            class="bg-transparent border-none outline-none w-full px-1 text-xs text-gray-700 focus:outline-none focus:ring-0" />
+        </div>
+
+        <!-- Filter -->
+        <button class="text-gray-700 hover:text-black mr-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 4h18l-7 8v8l-4-2v-6L3 4z" />
+          </svg>
+        </button>
+
+        <!-- Cart -->
+        <div class="relative mr-3">
+          <a class="text-gray-700 hover:text-black" href="{% url 'main:cart'%}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5 6m2 7v8m10-8v8m-6-8v8" />
+            </svg>
+          </a>
+          <span
+            class="absolute -top-2 -right-2 bg-black text-white text-xs font-semibold rounded-full w-3 h-3 flex items-center justify-center text-xxs">0</span>
+        </div>
+
+        <!-- Profile -->
+        <button onclick="toggleProfileSidebar()" class="text-gray-700 hover:text-black ml-auto">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5.121 17.804A9 9 0 1118.878 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+
+
+    </div>
+  </nav>
+
+  <!-- Mobile Dropdown Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200 shadow-md">
+    <div class="px-4 py-3 space-y-3 text-sm">
+      {% if not user.is_authenticated %}
+      <a href="#" class="block text-gray-800 font-semibold hover:text-black">Login / Register</a>
+      <hr class="border-gray-200" />
+      {% else %}
+      <a href="#" class="block text-gray-800 font-semibold hover:text-black">Shop Now!</a>
+      <hr class="border-gray-200" />
+      {% endif %}
+      <a href="{% url 'main:products' %}?gender=men" class="block text-gray-700 hover:text-black">MEN</a>
+      <a href="{% url 'main:products' %}?gender=women" class="block text-gray-700 hover:text-black">WOMEN</a>
+      <a href="{% url 'main:products' %}?gender=kids" class="block text-gray-700 hover:text-black">KIDS</a>
+      <a href="{% url 'main:products' %}?gender=unisex" class="block text-gray-700 hover:text-black">UNISEX</a>
+      <a href="{% url 'main:products' %}?gender=sports" class="block text-gray-700 hover:text-black">SPORTS</a>
+    </div>
+  </div>
+
+  <!-- Profile Sidebar -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="closeSidebar()"></div>
+  
+  <div id="profileSidebar" class="fixed top-0 right-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 translate-x-full">
+    <!-- Sidebar Header -->
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-gray-800">My Account</h2>
+        <button onclick="closeSidebar()" class="text-gray-500 hover:text-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      {% if user.is_authenticated %}
+      <div class="mt-4 flex items-center space-x-3">
+        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+          {{ user.username|first|upper }}
+        </div>
+        <div>
+          <p class="font-semibold text-gray-800">{{ user.username }}</p>
+          <p class="text-sm text-gray-500">{{ user.email }}</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar Content -->
+    <div class="p-6">
+      {% if user.is_authenticated %}
+        <!-- User is logged in -->
+        <div class="space-y-1">
+          <a href="#' %}" class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <span>My Profile</span>
+          </a>
+          
+          <a href="{% url 'main:products' %}?filter=my" class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m8-8V4a1 1 0 00-1-1h-2a1 1 0 00-1 1v1M9 7h6"/>
+            </svg>
+            <span>My Products</span>
+          </a>
+          
+          <a href="{% url 'main:add_product' %}" class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            <span>Add Product</span>
+          </a>
+        </div>
+
+        <!-- Bottom Logout Section -->
+        <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200">
+          <form method="POST" action="{% url 'main:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="flex items-center space-x-3 p-3 text-red-600 hover:bg-red-50 rounded-lg transition w-full">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+              <span>Logout</span>
+            </button>
+          </form>
+        </div>
+
+      {% else %}
+        <!-- User is not logged in -->
+        <div class="space-y-1">
+          <a href="{% url 'main:login' %}" class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+            </svg>
+            <span>Login</span>
+          </a>
+          
+          <a href="{% url 'main:register' %}" class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+            </svg>
+            <span>Register</span>
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</body>
+</html>
