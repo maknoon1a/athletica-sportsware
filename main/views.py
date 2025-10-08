@@ -249,6 +249,7 @@ def add_product_ajax(request):
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Invalid request'})
+# 
 
 @login_required(login_url=reverse_lazy('main:login'))
 @require_POST
