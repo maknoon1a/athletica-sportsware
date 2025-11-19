@@ -65,4 +65,3 @@ class Products(models.Model):
         self.sold_count += 1
         self.save()
 
-

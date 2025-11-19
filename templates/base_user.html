@@ -14,7 +14,9 @@
 
     </head>
     <body>
-        {% include 'navbar.html' %}
+        {% block navbar %}
+            {% include 'navbar.html' %}
+        {% endblock %}
         {% block content %} {% endblock content %}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 

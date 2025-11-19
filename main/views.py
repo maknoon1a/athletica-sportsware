@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from django.core import serializers
+import requests
 from main.models import Products
 from main.forms import ProductsForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -12,6 +13,8 @@ import datetime
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.http import JsonResponse
+from django.utils.html import strip_tags
 
 def show_main(request):
     context = {
@@ -21,11 +24,6 @@ def show_main(request):
         'class': 'PBP D'
     }
     return render(request, 'main.html', context)
-
-def show_json(request):
-    data = Products.objects.all()
-    data_json = serializers.serialize("json", data)
-    return HttpResponse(data_json, content_type="application/json")
 
 def show_xml(request):
     data = Products.objects.all()
@@ -339,3 +337,70 @@ def products_partial(request):
     }
     
     return render(request, 'products_partial.html', context)
+
+
+"===================VIEWS BUAT FLUTTER==================="
+def show_json(request):
+    data = Products.objects.all()
+    data_json = serializers.serialize("json", data)
+    return HttpResponse(data_json, content_type="application/json")
+
+def proxy_image(request):
+    image_url = request.GET.get('url')
+    if not image_url:
+        return HttpResponse('No URL provided', status=400)
+    
+    try:
+        # Fetch image from external source
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+        
+        # Return the image with proper content type
+        return HttpResponse(
+            response.content,
+            content_type=response.headers.get('Content-Type', 'image/jpeg')
+        )
+    except requests.RequestException as e:
+        return HttpResponse(f'Error fetching image: {str(e)}', status=500)
+    
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({"status": "error", "message": "User not authenticated"}, status=403)
+
+        data = json.loads(request.body)
+
+        name = strip_tags(data.get("name", ""))
+        price = data.get("price", 0)
+        description = strip_tags(data.get("description", ""))
+        detail = strip_tags(data.get("detail", ""))
+        thumbnail = data.get("thumbnail", "")
+        category = data.get("category", "jersey")
+        product_group = data.get("product_group", "running")
+        is_featured = data.get("is_featured", False)
+        size = data.get("size", "M")
+        gender = data.get("gender", "unisex")
+        stock_quantity = data.get("stock_quantity", 0)
+        is_available = data.get("is_available", True)
+
+        product = Products(
+            user=request.user,              
+            name=name,
+            price=price,
+            description=description,
+            detail=detail,
+            thumbnail=thumbnail,
+            category=category,
+            product_group=product_group,
+            is_featured=is_featured,
+            size=size,
+            gender=gender,
+            stock_quantity=stock_quantity,
+            is_available=is_available,
+        )
+        product.save()
+
+        return JsonResponse({"status": "success", "id": str(product.id)}, status=200)
+
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)

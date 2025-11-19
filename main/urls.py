@@ -27,6 +27,10 @@ urlpatterns = [
     path('main/ajax/update-product/<str:id>/', update_product_ajax, name='update_product_ajax'),
     path('main/ajax/delete-product/<str:id>/', delete_product_ajax, name='delete_product_ajax'),
     path('main/ajax/products-partial/', products_partial, name='products_partial'),
+
+    # Flutter endpoints
+    path('proxy-image/', proxy_image, name='proxy_image'),
+    path('create-flutter/', create_product_flutter, name='create_product_flutter'),
 ]
 
 if settings.DEBUG:
