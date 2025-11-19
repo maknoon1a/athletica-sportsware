@@ -11,7 +11,6 @@ urlpatterns = [
     path('main/mainpage/', show_products, name='products'),
     path('main/product/<str:id>/', product_detail, name='product_detail'),
     path('main/add-product/', add_product, name='add_product'),
-    path('main/show-json/', show_json, name='show_data_json'),
     path('main/show-xml/', show_xml, name='show_data_xml'),
     path('main/show-json/<str:id>/', show_json_byID, name='show_data_json_byID'),
     path('main/show-xml/<str:id>/', show_xml_byID, name='show_data_xml_byID'),
@@ -29,6 +28,7 @@ urlpatterns = [
     path('main/ajax/products-partial/', products_partial, name='products_partial'),
 
     # Flutter endpoints
+    path('show-json/', show_json, name='show_data_json'),
     path('proxy-image/', proxy_image, name='proxy_image'),
     path('create-flutter/', create_product_flutter, name='create_product_flutter'),
 ]
